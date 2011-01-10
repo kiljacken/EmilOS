@@ -1,0 +1,20 @@
+- Not Done
+* Partially Done
++ Done
+
+Version 0.1: WIP
++ Base kernel of of JamesM's tutorial kernel
++ Clean up folders and Makefile
+- Elf Execution
+
+Version 0.2:
+- Keyboard support
+- Implement newlib
+- Make a cross compiler
+- Cross compile binutils
+
+Version 0.3:
+- ACPI Driver
+- ATA Driver
+- ATAPI Driver (CD, DVD)
+- EXT2 Driver
