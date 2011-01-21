@@ -11,7 +11,6 @@
 #include "system/task.h"
 #include "system/syscall.h"
 #include "io/printf.h"
-#include "elf.h"
 
 extern u32int read_eip();
 void putc(void* p, char c){syscall_monitor_put(c);}
@@ -54,7 +53,11 @@ int main(struct multiboot *mboot_ptr, u32int initial_stack)
     // Initialize syscall function
     init_printf(NULL,putc);
     
-    monitor_write("Welcome to EmilOS!!\n");
+    monitor_write("  _            _   __ \n");
+    monitor_write(" |_ ._ _  o | / \ (_  \n");
+    monitor_write(" |_ | | | | | \_/ __) \n");
+    monitor_write("                      \n");
+    monitor_write("Version 1.0\n");
     
     #define FS_TEST
     #ifdef FS_TEST
@@ -93,18 +96,6 @@ int main(struct multiboot *mboot_ptr, u32int initial_stack)
 	syscall_monitor_write("Hello, user world!\n");
 	printf("Hello, user world from %s!!\n", "printf");
 	monitor_write("I don't hate you!\n");
-	#endif
-	
-	#define ELF_TEST
-	#ifdef ELF_TEST
-	DEBUG_MSG("Finding file...")
-	fs_node_t *elf_exec=finddir_fs(fs_root, "hello");
-	DEBUG_MSG("Initialzing buffer...")
-	char buf[512];
-	DEBUG_MSG("Reading file to memory...")
-    u32int sz = read_fs(elf_exec, 0, 512, buf);
-    DEBUG_MSG("Executing elf...")
-	execute_elf(buf);
 	#endif
 
     return 0;
