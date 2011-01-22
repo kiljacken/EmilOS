@@ -54,8 +54,8 @@ int main(struct multiboot *mboot_ptr, u32int initial_stack)
     init_printf(NULL,putc);
     
     monitor_write("  _            _   __ \n");
-    monitor_write(" |_ ._ _  o | / \ (_  \n");
-    monitor_write(" |_ | | | | | \_/ __) \n");
+    monitor_write(" |_ ._ _  o | / \\ (_  \n");
+    monitor_write(" |_ | | | | | \\_/ __) \n");
     monitor_write("                      \n");
     monitor_write("Version 1.0\n");
     
