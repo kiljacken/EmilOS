@@ -12,6 +12,8 @@ Version 0.2: WIP
 - Implement newlib
 - Make a cross compiler
 - Cross compile binutils
++ Add FPU support
++ Add SSE support
 
 Version 0.3:
 - ACPI Driver

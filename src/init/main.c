@@ -11,6 +11,7 @@
 #include "system/task.h"
 #include "system/syscall.h"
 #include "io/printf.h"
+#include "system/fpu.h"
 
 extern u32int read_eip();
 extern u32int placement_address;
@@ -38,6 +39,7 @@ void splasher(struct splash* actions) {
 
 struct splash actions[] = {
         { "Load Descriptor Tables", init_descriptor_tables },
+        { "Enable FPU", setup_x87_fpu },
         { "Enable Paging", initialise_paging },
         { "Enable Tasking", initialise_tasking },
         { "Enable Timer", init_timer },
@@ -73,7 +75,7 @@ int main(struct multiboot *mboot_ptr, u32int initial_stack)
     asm volatile("sti");
     splasher(actions);
     
-    #if 1
+    #if 0
     // list the contents of /
 	int i = 0;
 	struct dirent *node = 0;
