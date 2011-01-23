@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 #include "io/printf.h"
+#include "system/syscall.h"
 
 typedef void (*putcf) (void*,char);
 static putcf stdout_putf;
@@ -201,11 +202,15 @@ void tfp_format(void* putp,putcf putf,char *fmt, va_list va)
     abort:;
     }
 
+void putc(void* p, char c)
+{
+	syscall_monitor_put(c);
+}
 
-void init_printf(void* putp,void (*putf) (void*,char))
+void init_printf()
     {
-    stdout_putf=putf;
-    stdout_putp=putp;
+    stdout_putf=putc;
+    stdout_putp=NULL;
     }
 
 void tfp_printf(char *fmt, ...)

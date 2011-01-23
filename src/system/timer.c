@@ -13,7 +13,7 @@ static void timer_callback(registers_t *regs)
     switch_task();
 }
 
-void init_timer(u32int frequency)
+void init_timer()
 {
     // Firstly, register our timer callback.
     register_interrupt_handler(IRQ0, &timer_callback);
@@ -21,7 +21,7 @@ void init_timer(u32int frequency)
     // The value we send to the PIT is the value to divide it's input clock
     // (1193180 Hz) by, to get our required frequency. Important to note is
     // that the divisor must be small enough to fit into 16-bits.
-    u32int divisor = 1193180 / frequency;
+    u32int divisor = 1193180 / FREQUENCY;
 
     // Send the command byte.
     outb(0x43, 0x36);
@@ -34,3 +34,4 @@ void init_timer(u32int frequency)
     outb(0x40, l);
     outb(0x40, h);
 }
+

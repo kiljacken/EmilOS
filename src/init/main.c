@@ -13,22 +13,51 @@
 #include "io/printf.h"
 
 extern u32int read_eip();
-void putc(void* p, char c){syscall_monitor_put(c);}
-	
 extern u32int placement_address;
 u32int initial_esp;
+
+typedef void (*init_function)(void);
+
+struct splash{
+        char* action;
+        init_function func;
+};
+
+void splasher(struct splash* actions) {
+	int i = 0;
+	while (actions[i].func!=NULL)
+	{
+		monitor_write(actions[i].action);
+		monitor_write("... ");
+		actions[i].func();
+		monitor_write("Done!\n");
+		i++;
+	}
+	monitor_write("\n");
+}
+
+struct splash actions[] = {
+        { "Load Descriptor Tables", init_descriptor_tables },
+        { "Enable Paging", initialise_paging },
+        { "Enable Tasking", initialise_tasking },
+        { "Enable Timer", init_timer },
+        { "Enable Syscalls", initialise_syscalls },
+        { "Enable printf", init_printf },
+        { NULL, NULL, }
+};
 
 int main(struct multiboot *mboot_ptr, u32int initial_stack)
 {
     initial_esp = initial_stack;
-    // Initialise all the ISRs and segmentation
-    init_descriptor_tables();
     // Initialise the screen (by clearing it)
     monitor_clear();
-
-    // Initialise the PIT to 100Hz
-    asm volatile("sti");
-    init_timer(100);
+    
+    monitor_write("  _            _   __ \n");
+    monitor_write(" |_ ._ _  o | / \\ (_  \n");
+    monitor_write(" |_ | | | | | \\_/ __) \n");
+    monitor_write("                      \n");
+    monitor_write("Version 1.0\n\n");
+    monitor_write("Load initrd... ");
 
     // Find the location of our initial ramdisk.
     ASSERT(mboot_ptr->mods_count > 0);
@@ -36,31 +65,15 @@ int main(struct multiboot *mboot_ptr, u32int initial_stack)
     u32int initrd_end = *(u32int*)(mboot_ptr->mods_addr+4);
     // Don't trample our module with placement accesses, please!
     placement_address = initrd_end;
-
-    // Start paging.
-    initialise_paging();
-
-    // Start multitasking.
-    initialise_tasking();
-
+    
     // Initialise the initial ramdisk, and set it as the filesystem root.
     fs_root = initialise_initrd(initrd_location);
+    monitor_write("Done!\n");
     
+    asm volatile("sti");
+    splasher(actions);
     
-    // Initialize syscalls
-    initialise_syscalls();
-    
-    // Initialize syscall function
-    init_printf(NULL,putc);
-    
-    monitor_write("  _            _   __ \n");
-    monitor_write(" |_ ._ _  o | / \\ (_  \n");
-    monitor_write(" |_ | | | | | \\_/ __) \n");
-    monitor_write("                      \n");
-    monitor_write("Version 1.0\n");
-    
-    #define FS_TEST
-    #ifdef FS_TEST
+    #if 1
     // list the contents of /
 	int i = 0;
 	struct dirent *node = 0;
@@ -87,15 +100,14 @@ int main(struct multiboot *mboot_ptr, u32int initial_stack)
 	}
 	#endif
     
-    #ifdef PRINTF_TEST
+    #if 1
 	printf("Hello, from %s!!\n", "printf");
 	#endif
 	
-	#ifdef USERMODE_TEST
+	#if 1
 	switch_to_user_mode();
 	syscall_monitor_write("Hello, user world!\n");
 	printf("Hello, user world from %s!!\n", "printf");
-	monitor_write("I don't hate you!\n");
 	#endif
 
     return 0;

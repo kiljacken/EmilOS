@@ -5,7 +5,8 @@
 #define TIMER_H
 
 #include "system/common.h"
+#define FREQUENCY 100
 
-void init_timer(u32int frequency);
+void init_timer();
 
 #endif

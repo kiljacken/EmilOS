@@ -15,6 +15,44 @@ void register_interrupt_handler(u8int n, isr_t handler)
     interrupt_handlers[n] = handler;
 }
 
+unsigned char *exception_messages[] =
+{
+    "Division By Zero",
+    "Debug",
+    "Non Maskable Interrupt",
+    "Breakpoint",
+    "Into Detected Overflow",
+    "Out of Bounds",
+    "Invalid Opcode",
+    "No Coprocessor",
+    "Double Fault",
+    "Coprocessor Segment Overrun",
+    "Bad TSS",
+    "Segment Not Present",
+    "Stack Fault",
+    "General Protection Fault",
+    "Page Fault",
+    "Unknown Interrupt",
+    "Coprocessor Fault",
+    "Alignment Check",
+    "Machine Check",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved"
+};
+    
+    
+
 // This gets called from our ASM interrupt handler stub.
 void isr_handler(registers_t regs)
 {
@@ -29,9 +67,16 @@ void isr_handler(registers_t regs)
     }
     else
     {
-        monitor_write("unhandled interrupt: ");
-        monitor_write_hex(int_no);
+        monitor_write("Unhandled interrupt: ");
+        if (int_no < 32)
+		{
+			monitor_write(exception_messages[int_no]);
+			monitor_write(" Exception");
+		} else {
+			monitor_write_hex(int_no);
+		}
         monitor_put('\n');
+        monitor_write("System halted!\n");
         for(;;);
     }
 }
