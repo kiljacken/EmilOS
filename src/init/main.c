@@ -5,6 +5,7 @@
 #include "system/descriptor_tables.h"
 #include "system/timer.h"
 #include "mm/paging.h"
+#include "mm/kheap.h"
 #include "multiboot.h"
 #include "fs/fs.h"
 #include "fs/initrd.h"
@@ -12,6 +13,7 @@
 #include "system/syscall.h"
 #include "io/printf.h"
 #include "system/fpu.h"
+#include "string.h"
 
 extern u32int read_eip();
 extern u32int placement_address;
@@ -48,6 +50,40 @@ struct splash actions[] = {
         { NULL, NULL, }
 };
 
+typedef struct {
+	char* name;
+	char* value;
+}  env_var;
+
+env_var environ[256];
+
+char* get_var(char* name) {
+	int i=0;
+	while (environ[i].name != NULL)
+	{
+		if(strcmp(environ[i].name, name)==0)
+		{
+			return environ[i].value;
+		}
+		i++;
+	}
+	return NULL;
+}
+
+void set_var(char* name, char* value) {
+	int i=0;
+	while (environ[i].name != NULL) // Scroll to the end of environment variable list
+	{
+		i++;
+	}
+	environ[i].name = name;
+	environ[i].value = value;
+	environ[i+1].name = NULL;
+	environ[i+1].value = NULL;
+	
+	return 0;
+}
+
 int main(struct multiboot *mboot_ptr, u32int initial_stack)
 {
     initial_esp = initial_stack;
@@ -58,7 +94,7 @@ int main(struct multiboot *mboot_ptr, u32int initial_stack)
     monitor_write(" |_ ._ _  o | / \\ (_  \n");
     monitor_write(" |_ | | | | | \\_/ __) \n");
     monitor_write("                      \n");
-    monitor_write("Version 1.0\n\n");
+    monitor_write("Version 0.2a\n\n");
     monitor_write("Load initrd... ");
 
     // Find the location of our initial ramdisk.
@@ -111,6 +147,11 @@ int main(struct multiboot *mboot_ptr, u32int initial_stack)
 	float num;
 	num=0.2;
 	ASSERT(num/num==1);
+	#endif
+	
+	#if 1
+	set_var("SHELL", "bash");
+	printf("SHELL = %s\n", get_var("SHELL"));
 	#endif
 	
 	#if 1

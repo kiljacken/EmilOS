@@ -5,6 +5,7 @@
 #define COMMON_H
 
 #include <types.h>
+#include <string.h>
 
 void outb(u16int port, u8int value);
 u8int inb(u16int port);
