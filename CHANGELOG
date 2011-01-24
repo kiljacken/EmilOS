@@ -9,3 +9,7 @@ Version 0.1: Current
 Version 0.2: WIP
 + Add FPU support
 + Add SSE support
+* Add support for environment variables
++ Added some string/memory functions:
+    memcpy, memcmp, memmove, memset, strcmp, strcpy, strlen
++ Split moved types from system/common.h to types.h

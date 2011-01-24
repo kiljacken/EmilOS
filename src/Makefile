@@ -6,7 +6,9 @@
 SOURCES=init/boot.o init/main.o io/monitor.o system/common.o system/descriptor_tables.o \
 	system/isr.o system/interrupt.o system/gdt.o system/timer.o mm/kheap.o mm/paging.o \
 	ordered_array.o fs/fs.o fs/initrd.o system/task.o system/process.o system/syscall.o \
-	io/printf.o system/setjmp.o system/longjmp.o system/fpu.o system/cpuid.o
+	io/printf.o system/setjmp.o system/longjmp.o system/fpu.o system/cpuid.o $(STRING)
+
+STRING=string/memcpy.o string/memcmp.o string/memmove.o string/memset.o string/strcmp.o string/strcpy.o string/strlen.o
 
 CFLAGS=-O3 -nostdlib -nostdinc -fno-builtin -fno-stack-protector -Iincludes/
 LDFLAGS=-Tlink.ld
