@@ -107,6 +107,13 @@ int main(struct multiboot *mboot_ptr, u32int initial_stack)
 	#endif
 	
 	#if 1
+	printf("Testing floating point math...\n");
+	float num;
+	num=0.2;
+	ASSERT(num/num==1);
+	#endif
+	
+	#if 1
 	switch_to_user_mode();
 	syscall_monitor_write("Hello, user world!\n");
 	printf("Hello, user world from %s!!\n", "printf");
