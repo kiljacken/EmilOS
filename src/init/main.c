@@ -154,6 +154,11 @@ int main(struct multiboot *mboot_ptr, u32int initial_stack)
 	printf("SHELL = %s\n", get_var("SHELL"));
 	#endif
 	
+	#if 0
+	printf("Look mom! I can divide by zer.. OH SHIT!!\n");
+	printf("%d\n" , 1/0);
+	#endif
+	
 	#if 1
 	switch_to_user_mode();
 	syscall_monitor_write("Hello, user world!\n");
