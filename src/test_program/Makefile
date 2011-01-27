@@ -8,7 +8,7 @@ CFLAGS += -fno-common -nostdlib -nostdinc -nostartfiles -nodefaultlibs
 CFLAGS += -m32
 CFLAGS += -mno-red-zone -ffreestanding -fno-stack-protector
 
-LDFLAGS = -m elf_i386 -Bstatic --entry=main
+LDFLAGS = -m elf_i386 -Bstatic --entry=main 
 
 objs = $(target).o
 
