@@ -7,7 +7,7 @@ SOBJECTS=$(patsubst %.s, %.o, $(SSOURCES))
 
 CC=gcc
 LD=ld
-CFLAGS=-nostdlib -fno-builtin -m32 -Isrc/include/
+CFLAGS=-nostdlib -fno-builtin -m32 -Isrc/include/ -pipe
 LDFLAGS=-melf_i386 -Tlink.ld
 ASFLAGS=-felf
 
