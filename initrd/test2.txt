@@ -1,2 +1,0 @@
-My filename is test2.txt!
-This is a message from your creator!!

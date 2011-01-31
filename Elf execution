@@ -1,5 +1,0 @@
-Open elf file
-Read header
-Read code section
-Load code to memory
-Execute the code (jmp *address)
