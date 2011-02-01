@@ -24,6 +24,16 @@ int fn(void *arg)
 int main(multiboot_t *mboot_ptr)
 {
   monitor_clear();
+  
+  printk("8888888888               d8b 888  .d88888b.   .d8888b.\n");
+  printk("888                      Y8P 888 d88P\" \"Y88b d88P  Y88b\n");
+  printk("888                          888 888     888 Y88b.\n");
+  printk("8888888    88888b.d88b.  888 888 888     888  \"Y888b.\n");
+  printk("888        888 \"888 \"88b 888 888 888     888     \"Y88b.\n");
+  printk("888        888  888  888 888 888 888     888       \"888\n");
+  printk("888        888  888  888 888 888 Y88b. .d88P Y88b  d88P\n");
+  printk("8888888888 888  888  888 888 888  \"Y88888P\"   \"Y8888P\"\n");
+                                                       
 
   init_gdt ();
   init_idt ();
