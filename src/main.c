@@ -10,6 +10,7 @@
 #include "vmm.h"
 #include "elf.h"
 #include "thread.h"
+#include "fpu.h"
 
 elf_t kernel_elf;
 
@@ -25,6 +26,7 @@ int main(multiboot_t *mboot_ptr)
 
   init_gdt ();
   init_idt ();
+  setup_x87_fpu ();
   init_timer (20);
   init_pmm (mboot_ptr->mem_upper);
   init_vmm ();
