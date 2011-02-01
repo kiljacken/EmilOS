@@ -11,6 +11,7 @@
 #include "elf.h"
 #include "thread.h"
 #include "fpu.h"
+#include "initrd.h"
 
 elf_t kernel_elf;
 
@@ -55,6 +56,17 @@ int main(multiboot_t *mboot_ptr)
   }
 
   kernel_elf = elf_from_multiboot (mboot_ptr);
+  
+  // Find the location of our initial ramdisk.
+  if (mboot_ptr->mods_count <= 0)
+  {
+  	  panic("No initrd!!");
+  }
+  uint32_t initrd_location = *((uint32_t*)mboot_ptr->mods_addr);
+  uint32_t initrd_end = *(uint32_t*)(mboot_ptr->mods_addr+4);
+    
+  // Initialise the initial ramdisk, and set it as the filesystem root.
+  fs_root = initialise_initrd(initrd_location);
 
   asm volatile ("sti");
 
