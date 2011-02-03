@@ -1,9 +1,11 @@
 # Makefile for JamesM's kernel tutorials.
 
-CSOURCES=$(shell find -name *.c -not -wholename "*tools/*")
+CSOURCES=$(shell find -name *.c -not -wholename "*tools/*" -not -name "\.*")
 COBJECTS=$(patsubst %.c, %.o, $(CSOURCES))
-SSOURCES=$(shell find -name *.s -not -wholename "*tools/*")
+SSOURCES=$(shell find -name *.s -not -wholename "*tools/*" -not -name "\.*")
 SOBJECTS=$(patsubst %.s, %.o, $(SSOURCES))
+
+ALLFILES=$(shell find . \( ! -regex '.*/\..*' \) -type f)
 
 CC=gcc
 LD=ld
@@ -24,27 +26,26 @@ update: build_initrd
 	@sleep 1
 	@-rm -rf mnt/
 
-silly_syntax=./initrd_contents/$(1) $(1)
 initrd_contents = $(shell find ./initrd_contents/ -type f)
-map = $(foreach file,$(initrd_contents),$(call silly_syntax,$(file)))
+map = $(foreach file,$(initrd_contents),./initrd_contents/$(1) $(1))
 build_initrd: tools
 	@./tools/make_initrd $(map) > /dev/null
 	
-
 clean:
 	@echo Removing object files
-	@-rm $(COBJECTS) $(SOBJECTS) kernel
+	@for file in $(COBJECTS) $(SOBJECTS) kernel initrd.img emilos.tgz; do if [ -f $$file ]; then rm $$file; fi; done
+	@make -C tools/ clean
 
 link:
-	@echo Linking
+	@echo " LD	*.o"
 	@$(LD) $(LDFLAGS) -o kernel $(SOBJECTS) $(COBJECTS)
 
 .s.o:
-	@echo Assembling $<
+	@echo " NASM	$<"
 	@nasm $(ASFLAGS) $<
 
 .c.o:
-	@echo Compiling $<
+	@echo " CC	$<"
 	@$(CC) $(CFLAGS) -o $@ -c $<
 
 tools:
@@ -55,4 +56,34 @@ run: clean all
 	@echo Starting qemu
 	@qemu -m 256 -fda floppy.img&
 
-.PHONY : clean run link build_initrd update tools
+srcdist:
+	@tar czf emilos.tgz $(ALLFILES)
+
+todos:
+	-@for file in $(ALLFILES); do grep -H TODO $$file; done; true
+
+fixmes:
+	-@for file in $(ALLFILES); do grep -H FIXME $$file; done; true
+
+find:
+	@find include/ src/ -name "*\.[ch]" -type f | xargs grep $$FIND
+
+help:
+	@echo "Available make targets:"
+	@echo
+	@echo "all		- build kernel"
+	@echo "run		- run the kernel in qemu"
+	@echo "clean		- remove all object files"
+	@echo "update		- update floppy image"
+	@echo "build_initrd	- build initrd image"
+	@echo "tools		- build the tools that are used for various images"
+	@echo "srcdist		- build emilos.tgz (source tarball)"
+	@echo "todos		- list all TODO comments in the sources"
+	@echo "fixmes		- list all FIXME comments in the sources"
+	@echo "find		- find a phrase in the sources (Usage: FIND=\"phrase\" make find)"
+	@echo "help		- print this list"
+	@echo
+	@echo "Any additional compiler flags you want to use can be passed as USERFLAGS"
+	@echo "(Usage: USERFLAGS=\"flags\" make [...])."
+
+.PHONY: all kernel run update build_initrd tools clean srcdist todos fixmes find help

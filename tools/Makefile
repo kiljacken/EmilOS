@@ -6,7 +6,7 @@ CFLAGS=-O3 -pipe
 LDFLAGS=-Tlink.ld
 ASFLAGS=-felf -iincludes/
 
-all: clean
+all:
 	@$(CC) $(CFLAGS) make_initrd.c -o make_initrd
 	@chmod +x make_initrd
 
