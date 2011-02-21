@@ -60,8 +60,7 @@ static_dtors_loop:
 	cmp ebx, end_dtors			; Have we reached the end?
 	jb .body					; If not, continue to execute it
    
-    hlt							; Halt machine should kernel return
-    jmp $                       ; Incase machine doesn't halt
-								; enter an infinite loop, to stop the processor
-end:                           ; executing whatever rubbish is in the memory
+    .halt: hlt					; Enter an infinite loop, should the kernel return
+    jmp .halt                   
+end:                            ; executing whatever rubbish is in the memory
                                 ; after our kernel!
