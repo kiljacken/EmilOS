@@ -28,6 +28,11 @@ SECTIONS
         *(.bss)
         . = ALIGN(4096);
     }
+    
+    /DISCARD/ :
+    {
+		*(.comment)
+    }
 
     end = .; _end = .; __end = .;
 }
