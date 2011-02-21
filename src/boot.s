@@ -21,17 +21,47 @@ mboot:
     dd  MBOOT_HEADER_FLAGS      ; How GRUB should load your file / settings
     dd  MBOOT_CHECKSUM          ; To ensure that the above values are correct
     
-global start:function start.end-start ; Kernel entry point.
+global start:function end-start ; Kernel entry point.
 extern main                     ; This is the entry point of our C code
-
+extern start_ctors, end_ctors	; This is the place where the C++ 
+								; constructors reside
+extern start_dtors, end_dtors	; This is the place where the C++ 
+								; deconstructors reside
+								
 start:
     push ebx                  	; Push a pointer to the multiboot info structure.
+    
+    mov ebx, start_ctors		; Fetch first C++ constructor
+    jmp .test
+    
+.body:
+	call [ebx]					; Call the constructor
+	add ebx,4					; Go to the next one
+ 
+.test:
+	cmp ebx, end_ctors			; Have we reached the end?
+	jb .body					; If not, continue to execute it
 
     mov ebp, 0                  ; Initialise the base pointer to zero so we can terminate stack traces
                                 ; here.
-
+                                
     cli                         ; Disable interrupts.
     call main                   ; call our main() function.
-    jmp $                       ; Enter an infinite loop, to stop the processor
-.end:                           ; executing whatever rubbish is in the memory
+    
+static_dtors_loop:
+	mov ebx, start_dtors		; Fetch first C++ deconstructor
+	jmp .test
+ 
+.body:
+	call [ebx]					; Call the deconstructor
+	add ebx,4					; Go to the next one
+ 
+.test:
+	cmp ebx, end_dtors			; Have we reached the end?
+	jb .body					; If not, continue to execute it
+   
+    hlt							; Halt machine should kernel return
+    jmp $                       ; Incase machine doesn't halt
+								; enter an infinite loop, to stop the processor
+end:                           ; executing whatever rubbish is in the memory
                                 ; after our kernel!
