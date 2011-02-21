@@ -12,8 +12,10 @@
 #include "thread.h"
 #include "fpu.h"
 #include "initrd.h"
+#include "spinlock.h"
 
 elf_t kernel_elf;
+SPIN_LOCK test;
 
 int fn(void *arg)
 {
@@ -84,7 +86,7 @@ int main(multiboot_t *mboot_ptr)
   uint32_t *stack = kmalloc (0x100) + 0xF0;
   thread_t *t = create_thread(&fn, (void*)0x567, stack);
   thread_is_ready(t);
-
+  
   panic ("Testing panic mechanism");
   for (;;);
 
