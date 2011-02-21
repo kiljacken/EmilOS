@@ -6,6 +6,10 @@
 #ifndef HEAP_H
 #define HEAP_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "common.h"
 
 #define HEAP_START 0xD0000000
@@ -25,6 +29,10 @@ void *kmalloc (uint32_t l);
 
 // Takes a chunk of memory allocated with kmalloc, and returns it to the pool of usable memory.
 void kfree (void *p);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

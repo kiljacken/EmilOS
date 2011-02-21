@@ -6,6 +6,10 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "common.h"
 #include "thread.h"
 
@@ -22,5 +26,9 @@ void thread_is_ready (thread_t *t);
 void thread_not_ready (thread_t *t);
 
 void schedule ();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -6,6 +6,10 @@
 #ifndef THREAD_H
 #define THREAD_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "common.h"
 
 typedef struct
@@ -19,5 +23,9 @@ thread_t *init_threading ();
 thread_t *create_thread (int (*fn)(void*), void *arg, uint32_t *stack);
 
 void switch_thread (thread_t *next);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

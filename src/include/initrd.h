@@ -4,6 +4,10 @@
 #ifndef INITRD_H
 #define INITRD_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "common.h"
 #include "fs.h"
 
@@ -23,5 +27,9 @@ typedef struct
 // Initialises the initial ramdisk. It gets passed the address of the multiboot module,
 // and returns a completed filesystem node.
 fs_node_t *initialise_initrd(uint32_t location);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

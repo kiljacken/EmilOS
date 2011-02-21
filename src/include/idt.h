@@ -8,6 +8,10 @@
 #ifndef IDT_H
 #define IDT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "common.h"
 
 // A few defines to make life a little easier
@@ -114,5 +118,9 @@ extern void irq12();
 extern void irq13();
 extern void irq14();
 extern void irq15();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
