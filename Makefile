@@ -12,7 +12,8 @@ ALLFILES=$(shell find . \( ! -regex '.*/\..*' \) -type f)
 CC=gcc
 CPP=g++
 LD=ld
-CFLAGS=-nostdlib -fno-builtin -m32 -Isrc/include/ -pipe
+CFLAGS=-nostdlib -fno-builtin -m32 -Isrc/include/ -pipe 
+CPPFLAGS=$(CFLAGS) -fno-rtti -nostartfiles -fno-exceptions
 LDFLAGS=-melf_i386 -Tlink.ld
 ASFLAGS=-felf
 
@@ -53,7 +54,7 @@ link:
 	
 .cpp.o:
 	@echo " CPP	$<"
-	@$(CPP) $(CFLAGS) -o $@ -c $<
+	@$(CPP) $(CPPFLAGS) -o $@ -c $<
 
 tools:
 	@echo Building tools
