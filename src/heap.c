@@ -57,6 +57,13 @@ void *kmalloc (uint32_t l)
   return (void*) (chunk_start + sizeof (header_t));
 }
 
+void *cmalloc (uint32_t l)
+{
+	void *mem=kmalloc(l);
+	memset(mem, 0, l);
+	return mem;
+}
+
 void kfree (void *p)
 {
   header_t *header = (header_t*)((uint32_t)p - sizeof(header_t));

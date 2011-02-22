@@ -27,6 +27,10 @@ void init_heap ();
 // Returns a pointer to a chunk of memory, minimum size 'l' bytes.
 void *kmalloc (uint32_t l);
 
+// Returns a pointer to a chunk of memory, minimum size 'l' bytes,
+// and zero it's contents
+void *cmalloc (uint32_t l);
+
 // Takes a chunk of memory allocated with kmalloc, and returns it to the pool of usable memory.
 void kfree (void *p);
 
