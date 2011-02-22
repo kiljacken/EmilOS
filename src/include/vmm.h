@@ -6,10 +6,6 @@
 #ifndef VMM_H
 #define VMM_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "common.h"
 
 #define PAGE_DIR_VIRTUAL_ADDR   0xFFBFF000
@@ -40,10 +36,6 @@ void unmap (uint32_t va);
 // Returns 1 if the given virtual address is mapped in the address space.
 // If "*pa" is non-NULL, the physical address of the mapping is placed in *pa.
 char get_mapping (uint32_t va, uint32_t *pa);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif
 

@@ -1,10 +1,6 @@
 #ifndef CPUID_H
 #define CPUID_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 enum {
     CPUID_FEAT_ECX_SSE3         = 1 << 0, 
     CPUID_FEAT_ECX_PCLMUL       = 1 << 1,
@@ -63,9 +59,5 @@ enum {
     CPUID_FEAT_EDX_PBE          = 1 << 31
 };
 #define cpuid(in, a, b, c, d) asm("cpuid": "=a" (a), "=b" (b), "=c" (c), "=d" (d) : "a" (in));
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

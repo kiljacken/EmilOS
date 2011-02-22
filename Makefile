@@ -2,22 +2,18 @@
 
 CSOURCES=$(shell find -name *.c -not -wholename "*tools/*" -not -name "\.*")
 COBJECTS=$(patsubst %.c, %.o, $(CSOURCES))
-CPPSOURCES=$(shell find -name *.cpp -not -wholename "*tools/*" -not -name "\.*")
-CPPOBJECTS=$(patsubst %.cpp, %.o, $(CPPSOURCES))
 SSOURCES=$(shell find -name *.s -not -wholename "*tools/*" -not -name "\.*")
 SOBJECTS=$(patsubst %.s, %.o, $(SSOURCES))
 
 ALLFILES=$(shell find . \( ! -regex '.*/\..*' \) -type f)
 
 CC=gcc
-CPP=g++
 LD=ld
-CFLAGS=-nostdlib -fno-builtin -m32 -Isrc/include/ -pipe 
-CPPFLAGS=$(CFLAGS) -fno-rtti -nostartfiles -fno-exceptions
+CFLAGS=-nostdlib -fno-builtin -m32 -Isrc/include/ -pipe
 LDFLAGS=-melf_i386 -Tlink.ld
 ASFLAGS=-felf
 
-all: clean $(COBJECTS) $(CPPOBJECTS) $(SOBJECTS) link update
+all: clean $(COBJECTS) $(SOBJECTS) link update
 
 update: build_initrd
 	@echo Updating floppy image
@@ -37,12 +33,12 @@ build_initrd: tools
 	
 clean:
 	@echo Removing object files
-	@for file in $(COBJECTS) $(CPPOBJECTS) $(SOBJECTS) kernel initrd.img emilos.tgz; do if [ -f $$file ]; then rm $$file; fi; done
+	@for file in $(COBJECTS) $(SOBJECTS) kernel initrd.img emilos.tgz; do if [ -f $$file ]; then rm $$file; fi; done
 	@make -C tools/ clean
 
 link:
 	@echo " LD	*.o"
-	@$(LD) $(LDFLAGS) -o kernel $(SOBJECTS) $(CPPOBJECTS) $(COBJECTS)
+	@$(LD) $(LDFLAGS) -o kernel $(SOBJECTS) $(COBJECTS)
 
 .s.o:
 	@echo " NASM	$<"
@@ -51,10 +47,6 @@ link:
 .c.o:
 	@echo " CC	$<"
 	@$(CC) $(CFLAGS) -o $@ -c $<
-	
-.cpp.o:
-	@echo " CPP	$<"
-	@$(CPP) $(CPPFLAGS) -o $@ -c $<
 
 tools:
 	@echo Building tools

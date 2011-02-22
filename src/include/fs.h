@@ -4,10 +4,6 @@
 #ifndef FS_H
 #define FS_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "common.h"
 
 #define FS_FILE        0x01
@@ -65,9 +61,5 @@ void open_fs(fs_node_t *node, uint8_t read, uint8_t write);
 void close_fs(fs_node_t *node);
 struct dirent *readdir_fs(fs_node_t *node, uint32_t index);
 fs_node_t *finddir_fs(fs_node_t *node, char *name);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

@@ -4,10 +4,6 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // Some standard typedefs, to standardise sizes across platforms.
 // These typedefs are written for 32-bit X86.
 typedef unsigned int size_t;
@@ -26,8 +22,4 @@ void outb(uint16_t port, uint8_t value);
 uint8_t inb(uint16_t port);
 uint16_t inw(uint16_t port);
 
-
-#ifdef __cplusplus
-}
-#endif
 #endif // COMMON_H

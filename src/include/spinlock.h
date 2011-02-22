@@ -9,6 +9,4 @@ void LockSpinLock(SPIN_LOCK *SpinLock);
 void UnlockSpinLock(SPIN_LOCK *SpinLock);
 int TryLockSpinLock(SPIN_LOCK *SpinLock);
 
-
-
 #endif

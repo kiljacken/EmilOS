@@ -4,10 +4,6 @@
 #ifndef MULTIBOOT_H
 #define MULTIBOOT_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "common.h"
 
 #define MULTIBOOT_FLAG_MEM     0x001
@@ -59,9 +55,5 @@ typedef struct
   uint32_t length_high;
   uint32_t type;
 } __attribute__((packed)) mmap_entry_t;
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

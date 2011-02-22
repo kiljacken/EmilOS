@@ -6,10 +6,6 @@
 #ifndef ELF_H
 #define ELF_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "common.h"
 #include "multiboot.h"
 
@@ -54,9 +50,5 @@ elf_t elf_from_multiboot (multiboot_t *mb);
 
 // Looks up a symbol by address.
 const char *elf_lookup_symbol (uint32_t addr, elf_t *elf);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

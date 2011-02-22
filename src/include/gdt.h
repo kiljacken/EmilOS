@@ -8,10 +8,6 @@
 #ifndef GDT_H
 #define GDT_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "common.h"
 
 // Initialisation function.
@@ -38,9 +34,5 @@ typedef struct
     uint16_t limit;       // The upper 16 bits of all selector limits.
     uint32_t base;        // The address of the first gdt_entry_t struct.
 } __attribute__((packed)) gdt_ptr_t;
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

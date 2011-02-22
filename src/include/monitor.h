@@ -4,10 +4,6 @@
 #ifndef MONITOR_H
 #define MONITOR_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "common.h"
 
 // Write a single character out to the screen.
@@ -24,9 +20,5 @@ void monitor_write_hex(uint32_t n);
 
 // Output a decimal value to the monitor.
 void monitor_write_dec(uint32_t n);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // MONITOR_H

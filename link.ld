@@ -11,22 +11,12 @@ SECTIONS
     {
         code = .; _code = .; __code = .;
         *(.text)
-        *(.gnu.linkonce.t*)
         . = ALIGN(4096);
     }
     
     .rodata :
     {
-		start_ctors = .;
-		*(.ctor*)
-		end_ctors = .;
-
-		start_dtors = .;
-		*(.dtor*)
-		end_dtors = .;
-
 		*(.rodata*)
-		*(.gnu.linkonce.r*)
 		. = ALIGN(4096);
     }
 
@@ -34,7 +24,6 @@ SECTIONS
     {
         data = .; _data = .; __data = .;
         *(.data)
-        *(.gnu.linkonce.d*)
         . = ALIGN(4096);
     }
 
@@ -42,14 +31,12 @@ SECTIONS
     {
         bss = .; _bss = .; __bss = .;
         *(.bss)
-        *(.gnu.linkonce.b*)
         . = ALIGN(4096);
     }
     
     /DISCARD/ :
     {
 		*(.comment)
-		*(.eh_frame)
     }
 
     end = .; _end = .; __end = .;
