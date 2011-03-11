@@ -3,7 +3,7 @@
 #include <stdarg.h>
 #include "spinlock.h"
 
-SPIN_LOCK printk_lock;
+spinlock_t printk_lock;
 
 void printk (const char *fmt, ...)
 {

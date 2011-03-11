@@ -3,10 +3,13 @@
 
 #include "common.h"
 
-typedef unsigned int SPIN_LOCK;
+typedef struct spinlock {
+	uint32_t tid;
+	uint8_t lock;
+} spinlock_t;
 
-void LockSpinLock(SPIN_LOCK *SpinLock);
-void UnlockSpinLock(SPIN_LOCK *SpinLock);
-int TryLockSpinLock(SPIN_LOCK *SpinLock);
+void LockSpinLock(spinlock_t *SpinLock);
+void UnlockSpinLock(spinlock_t *SpinLock);
+int TryLockSpinLock(spinlock_t *SpinLock);
 
 #endif

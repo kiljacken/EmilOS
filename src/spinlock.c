@@ -1,18 +1,30 @@
 #include "common.h"
 #include "spinlock.h"
+#include "thread.h"
 
-void LockSpinLock(SPIN_LOCK *SpinLock)
+void LockSpinLock(spinlock_t *SpinLock)
 {
-	*SpinLock=1;
+	if (!SpinLock->lock) {
+		SpinLock->tid = get_tid();
+		SpinLock->lock=1;
+	}
 }
 
-void UnlockSpinLock(SPIN_LOCK *SpinLock)
+void UnlockSpinLock(spinlock_t *SpinLock)
 {
-	*SpinLock=0;
+	if (get_tid() == SpinLock->tid) {
+		SpinLock->tid =0;
+		SpinLock->lock=0;
+	}
 }
 
-int TryLockSpinLock(SPIN_LOCK *SpinLock)
+int TryLockSpinLock(spinlock_t *SpinLock)
 {
-	if (*SpinLock==1) { return 0; }
-	else { *SpinLock=1; return 1; }
+	if (SpinLock->lock==1) {
+		return 0;
+	} else {
+		SpinLock->tid = get_tid();
+		SpinLock->lock=1;
+		return 1;
+	}
 }
