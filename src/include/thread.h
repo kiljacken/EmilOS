@@ -20,4 +20,6 @@ thread_t *create_thread (int (*fn)(void*), void *arg, uint32_t *stack);
 
 void switch_thread (thread_t *next);
 
+uint32_t get_tid();
+
 #endif

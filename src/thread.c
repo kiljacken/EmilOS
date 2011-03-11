@@ -60,3 +60,7 @@ void thread_exit ()
   printk ("Thread exited with value %d\n", val);
   for (;;) ;
 }
+
+uint32_t get_tid() {
+	return current_thread->id;
+}
