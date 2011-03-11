@@ -15,7 +15,6 @@
 #include "spinlock.h"
 
 elf_t kernel_elf;
-SPIN_LOCK test;
 
 int fn(void *arg)
 {
@@ -35,8 +34,7 @@ int main(multiboot_t *mboot_ptr)
   printk("888        888  888  888 888 888 888     888       \"888\n");
   printk("888        888  888  888 888 888 Y88b. .d88P Y88b  d88P\n");
   printk("8888888888 888  888  888 888 888  \"Y88888P\"   \"Y8888P\"\n");
-                                                       
-
+  
   init_gdt ();
   init_idt ();
   setup_x87_fpu ();
@@ -85,7 +83,7 @@ int main(multiboot_t *mboot_ptr)
   init_scheduler (init_threading ());
   uint32_t *stack = kmalloc (0x100) + 0xF0;
   thread_t *t = create_thread(&fn, (void*)0x567, stack);
-  thread_is_ready(t);
+  //thread_is_ready(t);
   
   panic ("Testing panic mechanism");
   for (;;);
