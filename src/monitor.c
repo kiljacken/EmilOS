@@ -3,9 +3,16 @@
 //              but rewritten for JamesM's kernel tutorials.
 
 #include "monitor.h"
+#include "common.h"
 
-// The VGA framebuffer starts at 0xB8000.
+
+#ifndef VGA
+// The VGA Text mode framebuffer starts at 0xB8000.
 uint16_t *video_memory = (uint16_t*)0xB8000;
+#else
+#include "vga.h"
+uint16_t *video_memory = (uint16_t*)0xA8000;
+#endif
 // Stores the cursor position.
 uint8_t cursor_x = 0;
 uint8_t cursor_y = 0;
@@ -24,6 +31,7 @@ static void move_cursor()
 // Scrolls the text on the screen up by one line.
 static void scroll()
 {
+#ifndef VGA
   // Get a space character with the default colour attributes.
   uint8_t attributeByte = (0 /*black*/ << 4) | (15 /*white*/ & 0x0F);
   uint16_t blank = 0x20 /* space */ | (attributeByte << 8);
@@ -45,11 +53,19 @@ static void scroll()
     // The cursor should now be on the last line.
     cursor_y = 24;
   }
+#else
+    if (cursor_y >= 1800) {
+		memcpy(video_memory, video_memory+2400, 4300800);
+		memset(video_memory+4300800, 0, 19200);
+		cursor_y = 1200;
+	}
+#endif
 }
 
 // Writes a single character out to the screen.
 void monitor_put(char c)
 {
+#ifndef VGA
   // The background colour is black (0), the foreground is white (15).
   uint8_t backColour = 0;
   uint8_t foreColour = 15;
@@ -100,11 +116,51 @@ void monitor_put(char c)
   scroll();
   // Move the hardware cursor.
   move_cursor();
+#else
+  // Handle a backspace, by moving the cursor back one space
+  if (c == 0x08 && cursor_x)
+    cursor_x-=8;
+
+  // Handle a tab by increasing the cursor's X, but only to a point
+  // where it is divisible by 8.
+  else if (c == 0x09)
+    cursor_x = ((cursor_x+8) & ~(8-1))*8;
+
+  // Handle carriage return
+  else if (c == '\r')
+    cursor_x = 0;
+
+  // Handle newline by moving cursor back to left and increasing the row
+  else if (c == '\n')
+  {
+    cursor_x = 0;
+    cursor_y+= 8;
+  }
+
+  // Handle any other printable character.
+  else if(c >= ' ')
+  {
+	  draw_char(video_memory, cursor_x, cursor_y, c, RGB_UINT32(255,255,255));
+      cursor_x+=8;
+  }
+
+  // Check if we need to insert a new line because we have reached the end
+  // of the screen.
+  if (cursor_x >= 2400)
+  {
+      cursor_x = 0;
+      cursor_y +=8;
+  }
+
+  // Scroll the screen if needed.
+  scroll();
+#endif
 }
 
 // Clears the screen, by copying lots of spaces to the framebuffer.
 void monitor_clear()
 {
+#ifndef VGA
   // Make an attribute byte for the default colours
   uint8_t attributeByte = (0 /*black*/ << 4) | (15 /*white*/ & 0x0F);
   uint16_t blank = 0x20 /* space */ | (attributeByte << 8);
@@ -117,6 +173,11 @@ void monitor_clear()
   cursor_x = 0;
   cursor_y = 0;
   move_cursor();
+#else
+fillrect(video_memory, 0, 0, 800, 600, 0);
+cursor_x = 0;
+cursor_y = 0;
+#endif
 }
 
 // Outputs a null-terminated ASCII string to the monitor.
