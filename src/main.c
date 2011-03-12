@@ -83,7 +83,7 @@ int main(multiboot_t *mboot_ptr)
   init_scheduler (init_threading ());
   uint32_t *stack = kmalloc (0x100) + 0xF0;
   thread_t *t = create_thread(&fn, (void*)0x567, stack);
-  //thread_is_ready(t);
+  //thread_is_ready(t); // This is commented out, as it blocks the timer interrupt from fireing? FIXME
   
   panic ("Testing panic mechanism");
   for (;;);
