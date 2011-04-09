@@ -1,5 +1,6 @@
 # Makefile for JamesM's kernel tutorials.
 
+CHEADERS=$(shell find -name *.h -not -wholename "*tools/*" -not -name "\.*")
 CSOURCES=$(shell find -name *.c -not -wholename "*tools/*" -not -name "\.*")
 COBJECTS=$(patsubst %.c, %.o, $(CSOURCES))
 SSOURCES=$(shell find -name *.s -not -wholename "*tools/*" -not -name "\.*")
@@ -13,7 +14,7 @@ CFLAGS=-nostdlib -fno-builtin -m32 -Isrc/include/ -pipe
 LDFLAGS=-melf_i386 -Tlink.ld
 ASFLAGS=-felf
 
-all: clean $(COBJECTS) $(SOBJECTS) link update
+all: clean cog $(COBJECTS) $(SOBJECTS) link update
 
 update: build_initrd
 	@echo Updating floppy image
@@ -25,6 +26,9 @@ update: build_initrd
 	@sudo umount mnt/
 	@sleep 1
 	@-rm -rf mnt/
+	
+cog:
+	@python tools/cog.py -r $(CSOURCES) $(SSOURCES) $(CHEADERS)
 
 initrd_contents = $(shell find ./initrd_contents/ -type f)
 map = $(foreach file,$(initrd_contents),./initrd_contents/$(1) $(1))
