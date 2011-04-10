@@ -14,7 +14,7 @@ elf_t elf_from_multiboot (multiboot_t *mb)
   uint32_t shstrtab = sh[mb->shndx].addr;
   for (i = 0; i < mb->num; i++)
   {
-    const char *name = (const char *) (shstrtab + sh[i].name);
+    char *name = (char *) (shstrtab + sh[i].name);
     if (!strcmp (name, ".strtab"))
     {
       elf.strtab = (const char *)sh[i].addr;
@@ -46,4 +46,5 @@ const char *elf_lookup_symbol (uint32_t addr, elf_t *elf)
       return name;
     }
   }
+  return "";
 }

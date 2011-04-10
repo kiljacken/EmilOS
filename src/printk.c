@@ -2,6 +2,7 @@
 #include "vsprintf.h"
 #include <stdarg.h>
 #include "spinlock.h"
+#include "monitor.h"
 
 spinlock_t printk_lock;
 

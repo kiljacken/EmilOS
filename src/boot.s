@@ -22,7 +22,7 @@ mboot:
     dd  MBOOT_CHECKSUM      		; To ensure that the above values are correct
 
 global start:function start.end-start 	; Kernel entry point.
-extern main                     	; This is the entry point of our C code
+extern kmain                     	; This is the entry point of our C code
 								
 start:
     push ebx                  		; Push a pointer to the multiboot info structure.
@@ -30,7 +30,7 @@ start:
                                 	; here.
                                 
     cli                         	; Disable interrupts.
-    call main                   	; call our main() function.
+    call kmain                   	; call our main() function.
     
     .halt: hlt
     jmp .halt                       	; Enter an infinite loop, to stop the processor	 	

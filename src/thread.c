@@ -23,7 +23,7 @@ thread_t *init_threading ()
 thread_t *create_thread (int (*fn)(void*), void *arg, uint32_t *stack)
 {
   thread_t *thread = kmalloc (sizeof (thread_t));
-  memset (thread, 0, sizeof (thread_t));
+  memset ((uint8_t*)thread, 0, sizeof (thread_t));
   thread->id = next_tid++;
   
   *--stack = (uint32_t)arg;

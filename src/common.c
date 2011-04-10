@@ -57,6 +57,7 @@ char *strcpy(char *dest, const char *src)
   while (*src)
     *dest++ = *src++;
   *dest = '\0';
+  return dest;
 }
 
 // Concatenate the NULL-terminated string src onto
@@ -64,7 +65,7 @@ char *strcpy(char *dest, const char *src)
 char *strcat(char *dest, const char *src)
 {
   while (*dest)
-    *dest = *dest++;
+    *dest = *dest+1;// = *dest++;
 
   while (*src)
     *dest++ = *src++;

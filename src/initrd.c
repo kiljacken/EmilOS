@@ -62,7 +62,7 @@ fs_node_t *initialise_initrd(uint32_t location)
 
     // Initialise the root directory.
     initrd_root = (fs_node_t*)kmalloc(sizeof(fs_node_t));
-    strcpy(initrd_root->name, "initrd");
+    strcpy(initrd_root->name, (const char*)"initrd");
     initrd_root->mask = initrd_root->uid = initrd_root->gid = initrd_root->inode = initrd_root->length = 0;
     initrd_root->flags = FS_DIRECTORY;
     initrd_root->read = 0;
@@ -100,7 +100,7 @@ fs_node_t *initialise_initrd(uint32_t location)
         // of memory.
         file_headers[i].offset += location;
         // Create a new file node.
-        strcpy(root_nodes[i].name, &file_headers[i].name);
+        strcpy((char*)root_nodes[i].name, (char*)&file_headers[i].name);
         root_nodes[i].mask = root_nodes[i].uid = root_nodes[i].gid = 0;
         root_nodes[i].length = file_headers[i].length;
         root_nodes[i].inode = i;

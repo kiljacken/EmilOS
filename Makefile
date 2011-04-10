@@ -10,7 +10,7 @@ ALLFILES=$(shell find . \( ! -regex '.*/\..*' \) -type f)
 
 CC=gcc
 LD=ld
-CFLAGS=-nostdlib -fno-builtin -m32 -Isrc/include/ -pipe
+CFLAGS=-Wall -nostdlib -fno-builtin -m32 -Isrc/include/ -pipe
 LDFLAGS=-melf_i386 -Tlink.ld
 ASFLAGS=-felf
 

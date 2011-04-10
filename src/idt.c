@@ -26,7 +26,7 @@ interrupt_handler_t interrupt_handlers [256];
 void init_idt ()
 {
   // Zero all interrupt handlers initially.
-  memset (&interrupt_handlers, 0, sizeof (interrupt_handler_t) * 256);
+  memset ((uint8_t*)&interrupt_handlers, 0, sizeof (interrupt_handler_t) * 256);
 
   // Just like the GDT, the IDT has a "limit" field that is set to the last valid byte in the IDT,
   // after adding in the start position (i.e. size-1).
@@ -34,7 +34,7 @@ void init_idt ()
   idt_ptr.base  = (uint32_t) &idt_entries;
 
   // Zero the IDT to start with.
-  memset (&idt_entries, 0, sizeof (idt_entry_t) * 255);
+  memset ((uint8_t*)&idt_entries, 0, sizeof (idt_entry_t) * 255);
 
   // Remap the irq table.
   outb (0x20, 0x11);

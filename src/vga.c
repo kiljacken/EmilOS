@@ -34,7 +34,7 @@ void drawline(uint8_t* vram, uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1,
     uint32_t err = dx-dy;
     uint32_t err2;
     
-    while(x0 != x1 & y0 != y1) {
+    while((x0 != x1) & (y0 != y1)) {
 		putpixel(vram, x0, y0, color);
 		err2 = 2*err;
 		if (err2 > -dy) {
@@ -51,7 +51,7 @@ void drawline(uint8_t* vram, uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1,
 void draw_string(uint8_t* vram, uint32_t x, uint32_t y, char* input, uint32_t color) {
     vram += XY_TO_OFFSET(x,y);
     while(*input) {
-        draw_char(vram, 0, 0, (char)input, color);
+        draw_char(vram, 0, 0, (char)*input, color);
         vram += 8*3;
         input++;
     }
@@ -64,7 +64,7 @@ void draw_char(uint8_t* vram, uint32_t x, uint32_t y, char character, uint32_t c
  
     for (row = 0; row < 8; row++) {
 		for (column = 0; column < 8; column++) {
-			uint8_t out = vincent_data[character][row];
+			uint8_t out = vincent_data[(uint8_t)character][row];
 			if (out<<column & 0x01<<column) {
 				*(uint32_t *)vram = color;
 			}

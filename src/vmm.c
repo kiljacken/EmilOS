@@ -28,7 +28,7 @@ void init_vmm ()
   page_directory_t *pd = (page_directory_t*)pmm_alloc_page ();
   
   // Initialise it.
-  memset (pd, 0, 0x1000);
+  memset ((uint8_t*)pd, 0, 0x1000);
 
   // Identity map the first 4 MB.
   pd[0] = pmm_alloc_page () | PAGE_PRESENT | PAGE_WRITE;
@@ -39,7 +39,7 @@ void init_vmm ()
   // Assign the second-last table and zero it.
   pd[1022] = pmm_alloc_page () | PAGE_PRESENT | PAGE_WRITE;
   pt = (uint32_t*) (pd[1022] & PAGE_MASK);
-  memset (pt, 0, 0x1000);
+  memset ((uint8_t*)pt, 0, 0x1000);
   
   // The last entry of the second-last table is the directory itself.
   pt[1023] = (uint32_t)pd | PAGE_PRESENT | PAGE_WRITE;
@@ -59,7 +59,7 @@ void init_vmm ()
   // else it will panic on the first "pmm_free_page".
   uint32_t pt_idx = PAGE_DIR_IDX((PMM_STACK_ADDR>>12));
   page_directory[pt_idx] = pmm_alloc_page () | PAGE_PRESENT | PAGE_WRITE;
-  memset (page_tables[pt_idx*1024], 0, 0x1000);
+  memset ((uint8_t*)page_tables[pt_idx*1024], 0, 0x1000);
 
   // Paging is now active. Tell the physical memory manager.
   pmm_paging_active = 1;
@@ -82,7 +82,7 @@ void map (uint32_t va, uint32_t pa, uint32_t flags)
   {
     // The page table holding this page has not been created yet.
     page_directory[pt_idx] = pmm_alloc_page() | PAGE_PRESENT | PAGE_WRITE;
-    memset (page_tables[pt_idx*1024], 0, 0x1000);
+    memset ((uint8_t*)page_tables[pt_idx*1024], 0, 0x1000);
   }
 
   // Now that the page table definately exists, we can update the PTE.
@@ -112,6 +112,8 @@ char get_mapping (uint32_t va, uint32_t *pa)
     if (pa) *pa = page_tables[virtual_page] & PAGE_MASK;
     return 1;
   }
+  // Dummy return.. Will never be reached
+  return -1;
 }
 
 void page_fault (registers_t *regs)

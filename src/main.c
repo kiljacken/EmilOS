@@ -8,11 +8,13 @@
 #include "idt.h"
 #include "timer.h"
 #include "vmm.h"
+#include "pmm.h"
 #include "elf.h"
 #include "thread.h"
 #include "fpu.h"
 #include "initrd.h"
 #include "spinlock.h"
+#include "scheduler.h"
 
 elf_t kernel_elf;
 
@@ -22,7 +24,7 @@ int fn(void *arg)
   return 6;
 }
 
-int main(multiboot_t *mboot_ptr)
+int kmain(multiboot_t *mboot_ptr)
 {
   monitor_clear();
   
@@ -73,7 +75,7 @@ int main(multiboot_t *mboot_ptr)
   	  panic("No initrd!!");
   }
   uint32_t initrd_location = *((uint32_t*)mboot_ptr->mods_addr);
-  uint32_t initrd_end = *(uint32_t*)(mboot_ptr->mods_addr+4);
+  //uint32_t initrd_end = *(uint32_t*)(mboot_ptr->mods_addr+4);
     
   // Initialise the initial ramdisk, and set it as the filesystem root.
   fs_root = initialise_initrd(initrd_location);
@@ -83,7 +85,7 @@ int main(multiboot_t *mboot_ptr)
   init_scheduler (init_threading ());
   uint32_t *stack = kmalloc (0x100) + 0xF0;
   thread_t *t = create_thread(&fn, (void*)0x567, stack);
-  //thread_is_ready(t); // This is commented out, as it blocks the timer interrupt from fireing? FIXME
+  thread_is_ready(t); // This is commented out, as it blocks the timer interrupt from fireing? FIXME
   
   panic ("Testing panic mechanism");
   for (;;);
