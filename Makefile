@@ -20,8 +20,8 @@ update: build_initrd
 	@echo Updating floppy image
 	@-mkdir mnt/
 	@sudo mount -o loop floppy.img mnt/
-	@sudo cp kernel mnt/kernel
-	@sudo cp initrd.img mnt/initrd
+	@sudo cp kernel mnt/
+	@sudo cp initrd.img mnt/
 	@sleep 1
 	@sudo umount mnt/
 	@sleep 1
