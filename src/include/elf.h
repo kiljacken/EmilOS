@@ -6,7 +6,7 @@
 #ifndef ELF_H
 #define ELF_H
 
-#include "common.h"
+#include "types.h"
 #include "multiboot.h"
 
 #define ELF32_ST_BIND(i) ((i)>>4)

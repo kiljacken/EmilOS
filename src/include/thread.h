@@ -6,12 +6,13 @@
 #ifndef THREAD_H
 #define THREAD_H
 
-#include "common.h"
+#include "types.h"
 
 typedef struct
 {
   uint32_t id;                  // Thread ID.
   uint32_t esp, ebp, ebx, esi, edi;
+  uint8_t dead; // Not zero when thread has finished
 } thread_t;
 
 thread_t *init_threading ();

@@ -4,7 +4,7 @@
 #ifndef INITRD_H
 #define INITRD_H
 
-#include "common.h"
+#include "types.h"
 #include "fs.h"
 
 typedef struct

@@ -4,7 +4,7 @@
 #ifndef FS_H
 #define FS_H
 
-#include "common.h"
+#include "types.h"
 
 #define FS_FILE        0x01
 #define FS_DIRECTORY   0x02

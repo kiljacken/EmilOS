@@ -1,20 +1,21 @@
 # Makefile for JamesM's kernel tutorials.
 
-CHEADERS=$(shell find -name *.h -not -wholename "*tools/*" -not -name "\.*")
-CSOURCES=$(shell find -name *.c -not -wholename "*tools/*" -not -name "\.*")
+SUB_PROJECTS="tools libc"
+INCLUDES="src/include/ libc/include/"
+CSOURCES=$(shell find ./src/ -name *.c -not -name "\.*")
 COBJECTS=$(patsubst %.c, %.o, $(CSOURCES))
-SSOURCES=$(shell find -name *.s -not -wholename "*tools/*" -not -name "\.*")
+SSOURCES=$(shell find ./src/ -name *.s -not -name "\.*")
 SOBJECTS=$(patsubst %.s, %.o, $(SSOURCES))
 
 ALLFILES=$(shell find . \( ! -regex '.*/\..*' \) -type f)
 
 CC=gcc
 LD=ld
-CFLAGS=-Wall -nostdlib -fno-builtin -m32 -Isrc/include/ -pipe
+CFLAGS=-Wall -g -nostdlib -nostdinc -fno-builtin -m32 -Isrc/include/ -Ilibc/include/ -pipe
 LDFLAGS=-melf_i386 -Tlink.ld
 ASFLAGS=-felf
 
-all: clean cog $(COBJECTS) $(SOBJECTS) link update
+all: clean subprojects $(COBJECTS) $(SOBJECTS) link update
 
 update: build_initrd
 	@echo Updating floppy image
@@ -26,23 +27,22 @@ update: build_initrd
 	@sudo umount mnt/
 	@sleep 1
 	@-rm -rf mnt/
-	
-cog:
-	@python tools/cog.py -r $(CSOURCES) $(SSOURCES) $(CHEADERS)
 
 initrd_contents = $(shell find ./initrd_contents/ -type f)
 map = $(foreach file,$(initrd_contents),./initrd_contents/$(1) $(1))
-build_initrd: tools
+build_initrd:
 	@./tools/make_initrd $(map) > /dev/null
 	
 clean:
 	@echo Removing object files
-	@for file in $(COBJECTS) $(SOBJECTS) kernel initrd.img emilos.tgz; do if [ -f $$file ]; then rm $$file; fi; done
-	@make -C tools/ clean
+	@for file in $(COBJECTS) $(SOBJECTS) kernel kernel.sym initrd.img emilos.tgz; do if [ -f $$file ]; then rm $$file; fi; done
+	@for proj in $(SUB_PROJECTS); do if [ -d "$$proj/" ]; then @$(MAKE) -C $$proj/ clean; fi; done
 
 link:
 	@echo " LD	*.o"
-	@$(LD) $(LDFLAGS) -o kernel $(SOBJECTS) $(COBJECTS)
+	@$(LD) $(LDFLAGS) -o kernel $(SOBJECTS) $(COBJECTS) libc/libc.a
+	@objcopy --only-keep-debug kernel kernel.sym
+	@objcopy --strip-debug kernel
 
 .s.o:
 	@echo " NASM	$<"
@@ -52,13 +52,20 @@ link:
 	@echo " CC	$<"
 	@$(CC) $(CFLAGS) -o $@ -c $<
 
-tools:
-	@echo Building tools
-	@make -C tools/ > /dev/null
+subprojects:
+	@echo Building sub projects...
+	@for proj in $(SUB_PROJECTS); do if [ -d "$$proj/" ]; then @$(MAKE) -C $$proj/; fi; done
 
 run: clean all
-	@echo Starting qemu
-	@qemu -m 256 -fda floppy.img&
+	@echo Starting QEMU
+	@qemu -fda floppy.img&
+
+debug: clean all
+	@echo Starting QEMU
+	@qemu -s -S -fda floppy.img&
+	@echo Starting GDB
+	@echo To connect type: target remote localhost:1234
+	@gdb --symbols=kernel.sym
 
 srcdist:
 	@tar czf emilos.tgz $(ALLFILES)
@@ -69,25 +76,19 @@ todos:
 fixmes:
 	-@for file in $(ALLFILES); do grep -H FIXME $$file; done; true
 
-find:
-	@find include/ src/ -name "*\.[ch]" -type f | xargs grep $$FIND
-
 help:
 	@echo "Available make targets:"
 	@echo
 	@echo "all		- build kernel"
 	@echo "run		- run the kernel in qemu"
+	@echo "debug		- like run, but with debugging enabled and gdb started"
 	@echo "clean		- remove all object files"
 	@echo "update		- update floppy image"
 	@echo "build_initrd	- build initrd image"
-	@echo "tools		- build the tools that are used for various images"
+	@echo "subprojects	- build all related subprojects"
 	@echo "srcdist		- build emilos.tgz (source tarball)"
 	@echo "todos		- list all TODO comments in the sources"
 	@echo "fixmes		- list all FIXME comments in the sources"
-	@echo "find		- find a phrase in the sources (Usage: FIND=\"phrase\" make find)"
 	@echo "help		- print this list"
-	@echo
-	@echo "Any additional compiler flags you want to use can be passed as USERFLAGS"
-	@echo "(Usage: USERFLAGS=\"flags\" make [...])."
 
-.PHONY: all kernel run update build_initrd tools clean srcdist todos fixmes find help
+.PHONY: all kernel run debug update build_initrd subprojects clean srcdist todos fixmes help

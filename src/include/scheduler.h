@@ -6,7 +6,7 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 
-#include "common.h"
+#include "types.h"
 #include "thread.h"
 
 typedef struct thread_list

@@ -1,7 +1,7 @@
 #ifndef SPINLOCK_H
 #define SPINLOCK_H
 
-#include "common.h"
+#include "types.h"
 
 typedef struct spinlock {
 	uint32_t tid;
