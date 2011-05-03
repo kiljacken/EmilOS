@@ -11,6 +11,9 @@ link:
 	@echo " AR	*.o"
 	@ar cr libc.a $(COBJECTS)
 
+clean:
+	@-rm $(COBJECTS) libc.a
+
 .c.o:
 	@echo " CC	$<"
 	@$(CC) $(CFLAGS) -o $@ -c $<

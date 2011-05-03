@@ -12,20 +12,11 @@
 #include "mm/pmm.h"
 #include "mm/heap.h"
 #include "elf.h"
-#include "thread.h"
-#include "spinlock.h"
-#include "scheduler.h"
 #include "printk.h"
 #include "panic.h"
 #include "keyb.h"
 
 elf_t kernel_elf;
-
-int fn(void *arg)
-{
-  printk ("%x\n", arg);
-  return 6;
-}
 
 int kmain(multiboot_t *mboot_ptr)
 {
@@ -75,11 +66,6 @@ int kmain(multiboot_t *mboot_ptr)
 
   asm volatile ("sti");
 
-  init_scheduler (init_threading ());
-  uint32_t *stack = kmalloc (0x100) + 0xF0;
-  thread_t *t = create_thread(&fn, (void*)0x567, stack);
-//  thread_is_ready(t); // This is commented out, as it blocks the timer interrupt from fireing? FIXME
-  
   panic ("Testing panic mechanism");
   for (;;);
 

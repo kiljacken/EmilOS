@@ -17,26 +17,20 @@ ASFLAGS=-felf
 
 all: clean subprojects $(COBJECTS) $(SOBJECTS) link update
 
-update: build_initrd
+update:
 	@echo Updating floppy image
 	@-mkdir mnt/
 	@sudo mount -o loop floppy.img mnt/
 	@sudo cp kernel mnt/
-	@sudo cp initrd.img mnt/
 	@sleep 1
 	@sudo umount mnt/
 	@sleep 1
 	@-rm -rf mnt/
-
-initrd_contents = $(shell find ./initrd_contents/ -type f)
-map = $(foreach file,$(initrd_contents),./initrd_contents/$(1) $(1))
-build_initrd:
-	@./tools/make_initrd $(map) > /dev/null
 	
 clean:
 	@echo Removing object files
 	@for file in $(COBJECTS) $(SOBJECTS) kernel kernel.sym initrd.img emilos.tgz; do if [ -f $$file ]; then rm $$file; fi; done
-	@for proj in $(SUB_PROJECTS); do if [ -d "$$proj/" ]; then @$(MAKE) -C $$proj/ clean; fi; done
+	@for proj in $(SUB_PROJECTS); do if [ -d "$$proj/" ]; then $(MAKE) -C $$proj/ clean; fi; done
 
 link:
 	@echo " LD	*.o"
@@ -54,7 +48,7 @@ link:
 
 subprojects:
 	@echo Building sub projects...
-	@for proj in $(SUB_PROJECTS); do if [ -d "$$proj/" ]; then @$(MAKE) -C $$proj/; fi; done
+	@for proj in $(SUB_PROJECTS); do if [ -d "$$proj/" ]; then $(MAKE) -C $$proj/; fi; done
 
 run: clean all
 	@echo Starting QEMU
@@ -84,11 +78,10 @@ help:
 	@echo "debug		- like run, but with debugging enabled and gdb started"
 	@echo "clean		- remove all object files"
 	@echo "update		- update floppy image"
-	@echo "build_initrd	- build initrd image"
 	@echo "subprojects	- build all related subprojects"
 	@echo "srcdist		- build emilos.tgz (source tarball)"
 	@echo "todos		- list all TODO comments in the sources"
 	@echo "fixmes		- list all FIXME comments in the sources"
 	@echo "help		- print this list"
 
-.PHONY: all kernel run debug update build_initrd subprojects clean srcdist todos fixmes help
+.PHONY: all kernel run debug update subprojects clean srcdist todos fixmes help
