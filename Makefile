@@ -1,6 +1,6 @@
 # Makefile for JamesM's kernel tutorials.
 
-SUB_PROJECTS="tools libc"
+SUB_PROJECTS="libc"
 INCLUDES="src/include/ libc/include/"
 CSOURCES=$(shell find ./src/ -name *.c -not -name "\.*")
 COBJECTS=$(patsubst %.c, %.o, $(CSOURCES))
